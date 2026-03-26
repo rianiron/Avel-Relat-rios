@@ -729,31 +729,303 @@ const C = {
 
 /* ─── DATA — preencha os valores reais aqui ─── */
 const DATA = {
-  cliente:'[Nome do Cliente]', conta:'XXXXXXX', mesRef:'[Mês/Ano]',
-  patrimonio:0, ret12m:0, score:0, volatilidade:0,
-  bench:{ carteira:0, cdi:0, ipca:0, ibov:0, pctCDI:0 },
-  alocacao:[
-    {nome:'Renda Fixa Pós',   pct:0, cor:C.green},
-    {nome:'Renda Fixa IPCA+', pct:0, cor:C.teal},
-    {nome:'Crédito Privado',  pct:0, cor:C.tealDk},
-    {nome:'Renda Variável',   pct:0, cor:C.info},
-    {nome:'Alternativos',     pct:0, cor:C.accent},
-    {nome:'Internacional',    pct:0, cor:C.warn},
+ const DATA = {
+
+  // ─────────────────────────────────────────────
+  // IDENTIFICAÇÃO DO CLIENTE
+  // ─────────────────────────────────────────────
+  cliente: {
+    nome: "Gilbert Arantes Hime",
+    conta: "311059",
+    assessor: "Rian Beus",
+    custodiante: "Unique / XP Investimentos",
+    dataReferencia: "19/03/2026",
+    dataGeracao: "26/03/2026",
+  },
+
+  // ─────────────────────────────────────────────
+  // MACRO — atualizado mensalmente
+  // Fontes: BCB · IBGE · Anbima · BC
+  // ─────────────────────────────────────────────
+  macro: {
+    selic:  { valor: 14.75,  label: "14,75% a.a.",  fonte: "BCB — Copom 18/03/2026" },
+    ipca:   { mes: 0.70,     acum12m: 3.81,          label_mes: "0,70%",  label_12m: "3,81%",  fonte: "IBGE — Fev/2026" },
+    cdi:    { mes: 0.77,     anual: 14.65,            label_mes: "0,77%",  label_anual: "14,65% a.a.", fonte: "Anbima/B3 — Mar/2026" },
+    cambio: { usdBrl: 5.2280, label: "R$ 5,23",       fonte: "BC — 26/03/2026" },
+  },
+
+  // ─────────────────────────────────────────────
+  // EVOLUÇÃO PATRIMONIAL
+  // ─────────────────────────────────────────────
+  patrimonio: {
+    totalBruto:     3040982.36,
+    rentabilidadeMes:    -1.72,   // %
+    ganhoMes:         -56600.43,
+    rentabilidade24m:    21.10,   // %
+    ganho24m:        1273303.03,
+  },
+
+  // ─────────────────────────────────────────────
+  // RESUMO DA CARTEIRA — Períodos
+  // ─────────────────────────────────────────────
+  resumo: [
+    {
+      periodo:       "MÊS",
+      ganhoFinanceiro: -56600.43,
+      rentabilidade:    -1.72,
+      pctCDI:         -222.39,
+      movimentacoes:      0.00,
+    },
+    {
+      periodo:       "ANO",
+      ganhoFinanceiro:  106949.29,
+      rentabilidade:      2.74,
+      pctCDI:            92.37,
+      movimentacoes: -1700154.96,
+    },
+    {
+      periodo:       "12M",
+      ganhoFinanceiro: 1151311.42,
+      rentabilidade:    18.23,
+      pctCDI:          127.57,
+      movimentacoes: -7092911.39,
+    },
+    {
+      periodo:       "24M",
+      ganhoFinanceiro: 1273303.03,
+      rentabilidade:    21.10,
+      pctCDI:           77.68,
+      movimentacoes: -6858716.30,
+    },
   ],
-  evolucao:{
-    labels:['Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez','Jan','Fev'],
-    valores:new Array(12).fill(0),
+
+  // ─────────────────────────────────────────────
+  // BENCHMARKS
+  // ─────────────────────────────────────────────
+  benchmarks: {
+    cdi: {
+      mes:   0.77,
+      ano:   2.96,
+      m12:  14.29,
+      m24:  27.16,
+    },
+    ibovespa: {
+      mes:   -4.51,
+      ano:   11.88,
+      m12:   38.39,
+      m24:   40.72,
+    },
+    ipca: {
+      mes:    0.19,
+      ano:    1.23,
+      m12:    3.43,
+      m24:    9.10,
+    },
+    dolar: {
+      mes:    2.12,
+      ano:   -4.43,
+      m12:   -8.42,
+      m24:    5.25,
+    },
   },
-  scores:{diversificacao:0, liquidez:0, retorno:0, risco:0, aderencia:0},
-  projecao:{
-    labels:['2026','2027','2028','2029','2030','2031','2032','2033','2034','2035','2036'],
-    atual:new Array(11).fill(0), base:new Array(11).fill(0), otimista:new Array(11).fill(0),
-    taxas:{atual:0, base:0, otimista:0},
+
+  // ─────────────────────────────────────────────
+  // ESTATÍSTICAS HISTÓRICAS (24M)
+  // ─────────────────────────────────────────────
+  estatisticas: {
+    mesesPositivos:       14,
+    mesesNegativos:       10,
+    retornoMensalMaximo:   4.54,   // %
+    retornoMensalMinimo:  -2.98,   // %
+    mesesAcimaCDI:        12,
+    mesesAbaixoCDI:       12,
+    volatilidade12m:       6.18,   // %
+    volatilidade24m:       7.99,   // %
   },
-  performance:{labels:[], carteira:[], cdi:[], ipca:[]},
-  retMensal:{labels:[], carteira:[], cdi:[]},
-  macro:{selic:'—%', ipca:'—%', cdi:'—%', cambio:'—'},
+
+  // ─────────────────────────────────────────────
+  // RENTABILIDADE HISTÓRICA ANUAL
+  // ─────────────────────────────────────────────
+  historico: [
+    {
+      ano: 2024,
+      anoTotal: -2.94,
+      acumulado: 82.55,
+      meses: {
+        jan: -2.25, fev:  1.44, mar:  0.97, abr: -2.98,
+        mai: -0.90, jun:  0.83, jul:  2.61, ago:  3.55,
+        set: -1.31, out: -1.00, nov: -2.23, dez: -1.48,
+      },
+      cdi: {
+        jan: -232.97, fev: 179.53, mar: 116.76, abr: -336.26,
+        mai: -107.73, jun: 104.80, jul: 287.74, ago: 409.59,
+        set: -156.55, out: -107.53, nov: -281.95, dez: -159.03,
+      },
+    },
+    {
+      ano: 2025,
+      anoTotal: 21.58,
+      acumulado: 121.95,
+      meses: {
+        jan:  2.72, fev: -0.79, mar:  3.68, abr:  4.54,
+        mai:  1.97, jun:  0.89, jul: -2.27, ago:  3.86,
+        set:  2.53, out: -0.85, nov:  2.48, dez:  1.19,
+      },
+      cdi: {
+        jan: 269.26, fev: -80.47, mar: 382.79, abr: 429.71,
+        mai: 173.46, jun:  80.83, jul: -177.57, ago: 331.20,
+        set: 207.25, out: -66.53, nov: 235.81, dez: 97.70,
+      },
+    },
+    {
+      ano: 2026,
+      anoTotal:  2.74,
+      acumulado: 128.03,
+      meses: {
+        jan:  3.02, fev:  1.47, mar: -1.72,
+        abr: null,  mai: null,  jun: null,
+        jul: null,  ago: null,  set: null,
+        out: null,  nov: null,  dez: null,
+      },
+      cdi: {
+        jan: 259.69, fev: 147.57, mar: -222.39,
+        abr: null,   mai: null,   jun: null,
+        jul: null,   ago: null,   set: null,
+        out: null,   nov: null,   dez: null,
+      },
+    },
+  ],
+
+  // ─────────────────────────────────────────────
+  // EVOLUÇÃO PATRIMONIAL MENSAL (12 meses)
+  // ─────────────────────────────────────────────
+  evolucaoMensal: [
+    { mes: "abr./25", patrimonioInicial: 9069021.55,  movimentacoes: -150858.11, ir: -17356.71, iof: 0.00, patrimonioFinal: 9287455.14,  ganho:  387180.13, rent:  4.54, pctCDI:  429.71 },
+    { mes: "mai./25", patrimonioInicial: 9287455.14,  movimentacoes:       0.00, ir: -13035.95, iof: 0.00, patrimonioFinal: 9448062.74,  ganho:  174291.52, rent:  1.97, pctCDI:  173.46 },
+    { mes: "jun./25", patrimonioInicial: 9448062.74,  movimentacoes:  -35000.00, ir:    -69.15, iof: 0.00, patrimonioFinal: 9488439.12,  ganho:   75445.53, rent:  0.89, pctCDI:   80.83 },
+    { mes: "jul./25", patrimonioInicial: 9488439.12,  movimentacoes:       0.00, ir:   -113.56, iof: 0.00, patrimonioFinal: 9264488.44,  ganho: -223837.12, rent: -2.27, pctCDI: -177.57 },
+    { mes: "ago./25", patrimonioInicial: 9264488.44,  movimentacoes: -130000.00, ir:   -328.25, iof: 0.00, patrimonioFinal: 9477876.73,  ganho:  343716.55, rent:  3.86, pctCDI:  331.20 },
+    { mes: "set./25", patrimonioInicial: 9477876.73,  movimentacoes: -291000.00, ir:    -50.00, iof: 0.00, patrimonioFinal: 9411986.77,  ganho:  225160.03, rent:  2.53, pctCDI:  207.25 },
+    { mes: "out./25", patrimonioInicial: 9411986.77,  movimentacoes:-4746470.27, ir:   -587.89, iof: 0.00, patrimonioFinal: 4579802.45,  ganho:  -85126.16, rent: -0.85, pctCDI:  -66.53 },
+    { mes: "nov./25", patrimonioInicial: 4579802.45,  movimentacoes:  -39428.05, ir: -15698.19, iof: 0.00, patrimonioFinal: 4627938.27,  ganho:  103262.06, rent:  2.48, pctCDI:  235.81 },
+    { mes: "dez./25", patrimonioInicial: 4627938.27,  movimentacoes:       0.00, ir:   -767.22, iof: 0.00, patrimonioFinal: 4671440.64,  ganho:   44269.59, rent:  1.19, pctCDI:   97.70 },
+    { mes: "jan./26", patrimonioInicial: 4671440.64,  movimentacoes:-1700154.96, ir: -21477.05, iof: 0.00, patrimonioFinal: 3071669.20,  ganho:  121860.57, rent:  3.02, pctCDI:  259.69 },
+    { mes: "fev./26", patrimonioInicial: 3071669.20,  movimentacoes:       0.00, ir: -15762.74, iof: 0.00, patrimonioFinal: 3097595.62,  ganho:   41689.16, rent:  1.47, pctCDI:  147.57 },
+    { mes: "mar./26", patrimonioInicial: 3097595.62,  movimentacoes:       0.00, ir:    -12.82, iof: 0.00, patrimonioFinal: 3040982.36,  ganho:  -56600.43, rent: -1.72, pctCDI: -222.39 },
+  ],
+
+  // ─────────────────────────────────────────────
+  // COMPOSIÇÃO POR ESTRATÉGIA
+  // ─────────────────────────────────────────────
+  composicao: [
+    {
+      estrategia:   "Pós Fixado",
+      saldoBruto:    939525.71,
+      pctAloc:        30.90,
+      rent: { mes:  0.61, ano:  2.71, m12: 15.15, m24: 29.41 },
+    },
+    {
+      estrategia:   "Inflação",
+      saldoBruto:   1423220.36,
+      pctAloc:        46.80,
+      rent: { mes: -1.00, ano:  1.77, m12: 12.76, m24: 17.07 },
+    },
+    {
+      estrategia:   "Multimercado",
+      saldoBruto:    100586.52,
+      pctAloc:         3.31,
+      rent: { mes: -8.61, ano: -3.49, m12: 12.13, m24: 20.75 },
+    },
+    {
+      estrategia:   "Renda Variável Brasil",
+      saldoBruto:    134869.28,
+      pctAloc:         4.44,
+      rent: { mes: -19.29, ano: -4.40, m12: 16.45, m24: 11.95 },
+    },
+    {
+      estrategia:   "Alternativo",
+      saldoBruto:    219834.34,
+      pctAloc:         7.23,
+      rent: { mes:  0.65, ano:  8.60, m12: 44.61, m24: 82.03 },
+    },
+    {
+      estrategia:   "Renda Fixa Global",
+      saldoBruto:     86630.80,
+      pctAloc:         2.85,
+      rent: { mes: -1.85, ano: -2.29, m12:  0.21, m24: 15.22 },
+    },
+    {
+      estrategia:   "Fundos Listados",
+      saldoBruto:    136246.62,
+      pctAloc:         4.48,
+      rent: { mes:  0.10, ano: -1.42, m12: 11.65, m24:  4.97 },
+    },
+    {
+      estrategia:   "Caixa",
+      saldoBruto:         0.00,
+      pctAloc:         0.00,
+      rent: { mes: null, ano: null, m12: null, m24: null },
+    },
+    {
+      estrategia:   "Proventos",
+      saldoBruto:        81.60,
+      pctAloc:         0.00,
+      rent: { mes: null, ano: null, m12: null, m24: null },
+    },
+  ],
+
+  // ─────────────────────────────────────────────
+  // POSIÇÃO DETALHADA DOS ATIVOS
+  // ─────────────────────────────────────────────
+  ativos: [
+    // — Pós Fixado —
+    { estrategia: "Pós Fixado", nome: "CRA AIZ - AGO/2030 - CDI + 5,00%",                             saldo:  68363.48, qtd:       80,  pctAloc:  2.25, rent: { mes:  1.23, ano:  4.73, m24: 80.47 }, pctCDI: { mes: 158.35, ano: 159.68, m24: 296.24 } },
+    { estrategia: "Pós Fixado", nome: "CRA BTG - SET/2033 - CDI + 1,00%",                             saldo:  96527.69, qtd:       91,  pctAloc:  3.17, rent: { mes:  1.26, ano:  4.99, m24: 41.78 }, pctCDI: { mes: 162.54, ano: 168.39, m24: 153.82 } },
+    { estrategia: "Pós Fixado", nome: "DEB AEGEA RIO SPE4 - SET/2042",                                saldo:   9570.28, qtd:     6787,  pctAloc:  0.31, rent: { mes: -0.00, ano: -0.00, m24:  0.02 }, pctCDI: { mes:   0.00, ano:   0.00, m24:  20.00 } },
+    { estrategia: "Pós Fixado", nome: "PAAG11 - Pátria Crédito Agrícola FiAgro",                      saldo:  41092.91, qtd:     4000,  pctAloc:  1.35, rent: { mes:  1.16, ano:  4.25, m24: 38.94 }, pctCDI: { mes: 149.94, ano: 143.26, m24: 143.37 } },
+    { estrategia: "Pós Fixado", nome: "Riza Meyenii 360 Advisory FIF de Cotas de FIM",                saldo:  76581.21, qtd:  43865.11, pctAloc:  2.52, rent: { mes: -0.24, ano:  0.45, m24: 28.81 }, pctCDI: { mes: -30.34, ano:  15.18, m24: 106.05 } },
+    { estrategia: "Pós Fixado", nome: "SPX Seahawk Deb Incentivadas Advisory FIF CIC Incentivado RL", saldo: 121170.63, qtd:  94450.70, pctAloc:  3.98, rent: { mes: -0.56, ano:  3.56, m24: 24.91 }, pctCDI: { mes: -72.00, ano: 120.05, m24: 121.46 } },
+    { estrategia: "Pós Fixado", nome: "Tesouro Selic 2029",                                           saldo:  97791.18, qtd:     5.26,  pctAloc:  3.22, rent: { mes:  0.82, ano:  3.11, m24: 20.84 }, pctCDI: { mes: 106.48, ano: 104.75, m24: 101.17 } },
+    { estrategia: "Pós Fixado", nome: "Tesouro Selic 2031",                                           saldo: 335107.11, qtd:    18.09,  pctAloc: 11.02, rent: { mes:  0.80, ano:  3.00, m24: 14.68 }, pctCDI: { mes: 102.84, ano: 101.34, m24:  99.76 } },
+    { estrategia: "Pós Fixado", nome: "Trend Cash CIC de Classes RF Simples RL",                      saldo:  93085.34, qtd:   621.70,  pctAloc:  3.06, rent: { mes:  0.73, ano:  0.73, m24:  0.73 }, pctCDI: { mes: 101.33, ano: 101.33, m24: 101.33 } },
+    { estrategia: "Pós Fixado", nome: "Trend Investback FIC FIRF Simples RL",                         saldo:    235.88, qtd:   134.94,  pctAloc:  0.01, rent: { mes:  0.80, ano:  3.00, m24: 27.21 }, pctCDI: { mes: 103.72, ano: 101.20, m24: 100.90 } },
+
+    // — Inflação —
+    { estrategia: "Inflação", nome: "CRA CMAA - OUT/2034 - IPC-A + 8,36%",                              saldo: 127547.82, qtd:    120,     pctAloc:  4.19, rent: { mes:  0.03, ano:  4.41, m24: 17.58 }, pctCDI: { mes:   3.85, ano: 148.84, m24:  89.72 } },
+    { estrategia: "Inflação", nome: "CRA MARFRIG - OUT/2032 - IPC-A + 7,34%",                           saldo: 169156.41, qtd:    150,     pctAloc:  5.56, rent: { mes: -1.58, ano:  2.50, m24: 19.01 }, pctCDI: { mes: -204.11, ano:  84.36, m24:  69.97 } },
+    { estrategia: "Inflação", nome: "CRI BARI SECURITIZADORA S.A - SET/2039 - IPC-A + 6,90%",           saldo:  95077.62, qtd:     98,     pctAloc:  3.13, rent: { mes: -0.50, ano:  1.97, m24: 15.29 }, pctCDI: { mes:  -64.57, ano:  66.41, m24:  78.83 } },
+    { estrategia: "Inflação", nome: "DEB AEGEA RIO SPE1 - JAN/2042 - IPC-A + 7,20%",                   saldo: 100195.77, qtd:   9450,     pctAloc:  3.29, rent: { mes: -2.13, ano:  1.97, m24: 21.67 }, pctCDI: { mes: -275.56, ano:  66.48, m24:  79.79 } },
+    { estrategia: "Inflação", nome: "DEB AEGEA RIO SPE4 - JAN/2042 - IPC-A + 7,20%",                   saldo:  58770.63, qtd:   5550,     pctAloc:  1.93, rent: { mes: -2.24, ano:  2.09, m24: 20.49 }, pctCDI: { mes: -289.58, ano:  70.52, m24:  75.42 } },
+    { estrategia: "Inflação", nome: "DEB PETROBRAS - JAN/2029 - IPC-A + 4,22%",                        saldo: 119862.52, qtd:     87,     pctAloc:  3.94, rent: { mes: -0.63, ano:  3.10, m24: 21.30 }, pctCDI: { mes:  -81.87, ano: 104.65, m24:  78.40 } },
+    { estrategia: "Inflação", nome: "DEB SUPERVIA - NOV/2026 - IPC-A + 7,47%",                         saldo:      0.00, qtd:      8,     pctAloc:  0.00, rent: { mes: -0.00, ano: -0.00, m24: -0.00 }, pctCDI: { mes:   0.00, ano:   0.00, m24:   0.00 } },
+    { estrategia: "Inflação", nome: "Tesouro IPCA+ 2029",                                               saldo: 478768.69, qtd:   131.94,  pctAloc: 15.74, rent: { mes: -0.43, ano:  2.10, m24: 13.39 }, pctCDI: { mes:  -56.01, ano:  70.75, m24:  50.51 } },
+    { estrategia: "Inflação", nome: "Tesouro IPCA+ 2032",                                               saldo: 113928.08, qtd:    39.97,  pctAloc:  3.75, rent: { mes: -1.53, ano: -0.41, m24: -0.41 }, pctCDI: { mes: -196.96, ano: -29.79, m24: -29.79 } },
+    { estrategia: "Inflação", nome: "Tesouro IPCA+ 2035",                                               saldo:  71190.30, qtd:    30,     pctAloc:  2.34, rent: { mes: -1.75, ano:  0.39, m24:  5.90 }, pctCDI: { mes: -226.57, ano:  13.00, m24:  21.73 } },
+    { estrategia: "Inflação", nome: "Tesouro IPCA+ c/ Juros Semestrais 2035",                           saldo:  42380.10, qtd:    10,     pctAloc:  1.39, rent: { mes: -1.23, ano:  1.05, m24:  2.99 }, pctCDI: { mes: -158.38, ano:  35.51, m24:  54.40 } },
+    { estrategia: "Inflação", nome: "Tesouro IPCA+ c/ Juros Semestrais 2055",                           saldo:  46342.42, qtd:    11.52,  pctAloc:  1.52, rent: { mes: -2.62, ano:  1.19, m24:  4.34 }, pctCDI: { mes: -338.62, ano:  40.11, m24:  15.98 } },
+
+    // — Multimercado —
+    { estrategia: "Multimercado", nome: "Kapitalo Kappa Advisory FIF em Cotas de FIM", saldo: 100586.52, qtd: 43016.34, pctAloc: 3.31, rent: { mes: -8.61, ano: -3.49, m24: 20.75 }, pctCDI: { mes: -1111.76, ano: -117.76, m24: 76.38 } },
+
+    // — Renda Variável Brasil —
+    { estrategia: "Renda Variável Brasil", nome: "Alaska Black FIC de FIA - BDR NÍVEL I", saldo:  155400.32, qtd: 56032.05, pctAloc:  5.11, rent: { mes: -19.29, ano: 3.64, m24: -11.97 }, pctCDI: { mes: -2490.75, ano: 122.79, m24: -44.06 } },
+    { estrategia: "Renda Variável Brasil", nome: "CRA MARFRIG - OUT/2032 (SWAP)",        saldo:  -20531.04, qtd: 150507,   pctAloc: -0.68, rent: { mes: null,   ano: null, m24: null   }, pctCDI: { mes: null,      ano: null,  m24: null   } },
+
+    // — Alternativo —
+    { estrategia: "Alternativo", nome: "Headline XP VC 3 FIP Multiestratégia Classe A - Trend PE X FIC RF Simples RL", saldo:  41708.88, qtd: 26269.65, pctAloc: 1.37, rent: { mes:  0.80, ano:  3.00, m24: 27.32 }, pctCDI: { mes: 103.59, ano: 101.14, m24: 100.56 } },
+    { estrategia: "Alternativo", nome: "Headline XP Venture Capital 3 FIP Multi - Classe A",                           saldo:  24782.86, qtd:    27.24, pctAloc: 0.81, rent: { mes:  0.30, ano: -0.16, m24: 12.70 }, pctCDI: { mes:  38.67, ano:  -5.45, m24:  46.74 } },
+    { estrategia: "Alternativo", nome: "XP Credit Opportunities FIDC - Modelo A",                                      saldo:  60704.98, qtd:    49.99, pctAloc: 2.00, rent: { mes:  0.97, ano:  4.15, m24: 20.68 }, pctCDI: { mes: 125.50, ano: 140.11, m24:  78.47 } },
+    { estrategia: "Alternativo", nome: "XP Special Opportunities FIP Multi - Classe A",                                saldo:  92637.62, qtd:    75,    pctAloc: 3.05, rent: { mes:  0.47, ano:  2.19, m24: 25.75 }, pctCDI: { mes:  60.49, ano:  73.97, m24:  94.79 } },
+
+    // — Renda Fixa Global —
+    { estrategia: "Renda Fixa Global", nome: "Pimco Income FIC de FIF Multimercado IE RL", saldo: 86630.80, qtd: 34052.03, pctAloc: 2.85, rent: { mes: -1.85, ano:  0.81, m24: 27.24 }, pctCDI: { mes: -238.71, ano: 27.35, m24: 100.27 } },
+
+    // — Fundos Listados —
+    { estrategia: "Fundos Listados", nome: "TGRE11 - TG Real Estate", saldo: 136246.62, qtd: 15000, pctAloc: 4.48, rent: { mes:  0.10, ano: -1.23, m24: 21.77 }, pctCDI: { mes: 12.64, ano: -41.47, m24: 80.16 } },
+  ],
+
 };
+
 
 /* ─── Helpers ─── */
 const fmt  = (v,d=2) => v ? v.toFixed(d)+'%' : '—%';
